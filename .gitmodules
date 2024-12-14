@@ -1,0 +1,6 @@
+[submodule "bsdbx"]
+	path = bsdbx
+	url = https://github.com/haomingbai/bsdbx.git
+[submodule "third_party/bsdbx"]
+	path = third_party/bsdbx
+	url = https://github.com/haomingbai/bsdbx.git
