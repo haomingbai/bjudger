@@ -1,0 +1,2 @@
+# bjudger
+`bjudger` is a judging server designed to function as an Online Judge (OJ) server. It provides a list of available problems and evaluates submitted solutions. This project aims to facilitate competitive programming by automating the judging process and offering a seamless experience for users to test their code against predefined problem sets.
