@@ -124,6 +124,12 @@ JudgeResult CppJudger::judge(std::string code, std::vector<std::string> &input,
             result.memoryUsage.push_back(stoi(memoryUsage));
             result.timeUsage.push_back(timeLimit);
         }
+        else if (runResults[i].exitCode != 0)
+        {
+            result.status.push_back(JudgeResult::RE);
+            result.memoryUsage.push_back(stoi(memoryUsage));
+            result.timeUsage.push_back(stoi(timeUsage));
+        }
         else // Compare the result line by line
         {
             // Compare the size first
@@ -177,7 +183,8 @@ JudgeResult CppJudger::judge(std::string code)
 
 extern "C"
 {
-    bjudger::Judger *createJudger(char *workingDirectory, char *runnerPath, char *compilerPath, char *bsdbxPath, int runnerNum);
+    bjudger::Judger *createJudger(char *workingDirectory, char *runnerPath, char *compilerPath, char *bsdbxPath,
+                                  int runnerNum);
 }
 
 bjudger::Judger *createJudger(char *workingDirectory, char *runnerPath, char *compilerPath, char *bsdbxPath,
