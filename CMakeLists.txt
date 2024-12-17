@@ -8,7 +8,7 @@ if(POLICY CMP0167)
 endif()
 find_package(Boost REQUIRED COMPONENTS filesystem process)
 
-add_executable(bjudger src/main.cpp src/lib/simple_c_compiler.cpp)
+add_executable(bjudger src/main.cpp src/lib/simple_cpp_compiler.cpp src/lib/complex_compiler.cpp)
 include_directories(src/include)
 target_link_libraries(bjudger PRIVATE workflow)
 target_link_libraries(bjudger PRIVATE Boost::filesystem Boost::process)

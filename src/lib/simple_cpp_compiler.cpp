@@ -1,17 +1,18 @@
-#include "simple_c_compiler.h"
+#include "lang/cpp/simple_cpp_compiler.h"
 #include <boost/asio.hpp>
 #include <boost/process/v2.hpp>
 #include <filesystem>
 #include <fstream>
 #include <iosfwd>
+#include <iostream>
 #include <memory>
 #include <mutex>
 #include <string>
-#include <iostream>
+#include <time.h>
 
 namespace bjudger
 {
-SimpleCCompiler::SimpleCCompiler(std::string outputDirectory, std::string compilerPath, std::string bsdbxPath)
+SimpleCppCompiler::SimpleCppCompiler(std::string outputDirectory, std::string compilerPath, std::string bsdbxPath)
 {
     using namespace std;
     namespace fs = filesystem;
@@ -32,7 +33,8 @@ SimpleCCompiler::SimpleCCompiler(std::string outputDirectory, std::string compil
         this->bsdbxPath = bsdbxPath;
     }
 }
-CompilerLog SimpleCCompiler::compile(std::string_view src)
+
+CompilerLog SimpleCppCompiler::compile(std::string src, std::vector<std::string> argList, size_t timeLimitation)
 {
     using namespace std;
     namespace bp = boost::process;
@@ -45,7 +47,7 @@ CompilerLog SimpleCCompiler::compile(std::string_view src)
     string outputFilePath = outputDirectory + '/' + to_string(timestamp) + ".out";
 
     // Write the source code to a temporary file.
-    string tempFilePath = outputDirectory + '/' + to_string(timestamp) + ".c";
+    string tempFilePath = outputDirectory + '/' + to_string(timestamp) + ".cpp";
     ofstream tempFile(tempFilePath);
     tempFile << src;
     tempFile.close();
@@ -53,17 +55,26 @@ CompilerLog SimpleCCompiler::compile(std::string_view src)
     // Generate the command and arguments.
     auto command = this->bsdbxPath;
     vector<string> args = {};
-    args.push_back("--path=" + compilerPath);
+    args.push_back(compilerPath);
     args.push_back("--mode=compiler");
+    args.push_back("--time-limit=" + to_string(timeLimitation));
+    args.insert(args.end(), argList.begin(), argList.end());
     args.push_back(tempFilePath);
     args.push_back("-o");
     args.push_back(outputFilePath);
 
-    // Run the compiler.
+    // Prepara to run the compiler.
     boost::asio::io_context ctx;
     boost::asio::readable_pipe err{ctx};
     boost::system::error_code ret;
     int code;
+    cout << "Command: " << command << endl;
+    for (auto &&i : args)
+    {
+        cout << i << ' ';
+    }
+    cout << endl;
+    
     try
     {
         bp::process compilerProcess(ctx, command, args, bp::process_stdio{{}, {}, err});
@@ -83,12 +94,31 @@ CompilerLog SimpleCCompiler::compile(std::string_view src)
     }
     else
     {
-        string log;
-        log.resize(1024);
+        string log, tmp;
+        tmp.resize(1024);
         boost::system::error_code ec;
-        err.read_some(boost::asio::buffer(log), ec);
-        log.shrink_to_fit();
+        while (err.read_some(boost::asio::buffer(tmp), ec))
+        {
+            log += tmp;
+        }
         return {"", log};
     }
+}
+
+CompilerLog SimpleCppCompiler::compile(std::string src, size_t timeLimitation)
+{
+    using namespace std;
+    return this->compile(src, {}, timeLimitation);
+}
+
+CompilerLog SimpleCppCompiler::compile(std::string src)
+{
+    using namespace std;
+    return this->compile(src, {}, 0);
+}
+
+CompilerLog SimpleCppCompiler::compile(std::string src, std::vector<std::string> argList)
+{
+    return this->compile(src, argList, 0);
 }
 } // namespace bjudger

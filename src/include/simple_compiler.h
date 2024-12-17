@@ -6,7 +6,7 @@
 
 namespace bjudger
 {
-class SimpleCompiler : Compiler
+class SimpleCompiler : public Compiler
 {
   protected:
     std::mutex mtx;
