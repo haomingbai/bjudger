@@ -2,6 +2,7 @@
 #define RUNNER_H
 
 #include <string>
+#include <vector>
 
 namespace bjudger
 {
@@ -13,7 +14,7 @@ struct RunResult
     std::string error;
 };
 
-class Runnner
+class Runner
 {
   public:
     /**
@@ -31,7 +32,7 @@ class Runnner
      * @param input The input to be provided to the code as a string.
      * @return RunResult The result of the code execution.
      */
-    virtual RunResult run(std::string code, std::string input) = 0;
+    virtual std::vector<RunResult> run(std::string code, std::vector<std::string> &input) = 0;
 
     /**
      * @brief Executes the given code with the specified input, time limit, and memory limit.
@@ -42,7 +43,7 @@ class Runnner
      * @param memoryLimit The maximum amount of memory (in KB) the code is allowed to use.
      * @return RunResult The result of the code execution, including output, execution time, and memory usage.
      */
-    virtual RunResult run(std::string code, std::string input, size_t timeLimit, size_t memoryLimit) = 0;
+    virtual std::vector<RunResult> run(std::string code, std::vector<std::string> &input, size_t timeLimit, size_t memoryLimit) = 0;
 };
 
 } // namespace bjudger

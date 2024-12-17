@@ -3,12 +3,18 @@ project(bjudger VERSION 0.1.0 LANGUAGES C CXX)
 
 find_package(workflow REQUIRED)
 
+set(CMAKE_CXX_STANDARD 23)
+
 if(POLICY CMP0167)
   cmake_policy(SET CMP0167 NEW)
 endif()
 find_package(Boost REQUIRED COMPONENTS filesystem process)
 
-add_executable(bjudger src/main.cpp src/lib/simple_cpp_compiler.cpp src/lib/complex_compiler.cpp)
+aux_source_directory(src/lib/plugins/cpp PLUGIN_CPP_SRC)
+add_library(simple_cpp_judger SHARED ${PLUGIN_CPP_SRC})
+target_link_libraries(simple_cpp_judger PRIVATE Boost::filesystem Boost::process)
+
+add_executable(bjudger src/main.cpp)
 include_directories(src/include)
 target_link_libraries(bjudger PRIVATE workflow)
 target_link_libraries(bjudger PRIVATE Boost::filesystem Boost::process)
