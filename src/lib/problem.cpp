@@ -219,4 +219,10 @@ FinalResult Problem::judge(std::string code, std::string lang)
         return result;
     }
 }
+
+std::string Problem::getId()
+{
+    return this->id;
+}
+
 } // namespace bjudger

@@ -52,4 +52,9 @@ class Judger
 
 } // namespace bjudger
 
+extern "C"
+{
+    bjudger::Judger *createJudger(char *workingDirectory, char *runnerPath, char *compilerPath, char *bsdbxPath, int runnerNum, size_t timeLimit, size_t memoryLimit, char *specialJudgerPath);
+}
+
 #endif // JUDGER_H

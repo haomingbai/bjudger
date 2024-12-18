@@ -14,10 +14,15 @@ aux_source_directory(src/lib/plugins/cpp PLUGIN_CPP_SRC)
 add_library(simple_cpp_judger SHARED ${PLUGIN_CPP_SRC})
 target_link_libraries(simple_cpp_judger PRIVATE Boost::process)
 
-add_executable(bjudger src/main.cpp)
+add_library(problem src/lib/problem.cpp)
+target_link_libraries(problem PUBLIC crypto)
+
+aux_source_directory(src/main MAIN_SRC)
+add_executable(bjudger ${MAIN_SRC})
 include_directories(src/include)
 target_link_libraries(bjudger PRIVATE workflow)
 target_link_libraries(bjudger PRIVATE Boost::json Boost::program_options)
+target_link_libraries(bjudger PRIVATE problem)
 
 add_subdirectory(third_party/bsdbx ${CMAKE_BINARY_DIR}/bin)
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
