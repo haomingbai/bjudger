@@ -36,8 +36,8 @@ class Judger
      * @param memoryLimit The maximum allowed memory usage for the code (in bytes).
      * @return JudgeResult The result of the judging process, indicating success, failure, or any errors encountered.
      */
-    virtual JudgeResult judge(std::string code, std::vector<std::string> &input, std::vector<std::string> &expectedOutput,
-                              size_t timeLimit, size_t memoryLimit) = 0;
+    virtual JudgeResult judge(std::string code, std::vector<std::string> &input,
+                              std::vector<std::string> &expectedOutput) = 0;
 
     /**
      * @brief Pure virtual function to judge the provided code.

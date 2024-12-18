@@ -1,0 +1,24 @@
+{
+    "thread": 4,
+    "port": 8080,
+    "problems": [
+        {
+            "path": "/path/to/problem/directory",
+            "specialJudge": false,
+            "judgers": [
+                {
+                    "name": "cpp",
+                    "path": "/path/to/judger.so",
+                    "workingDirectory": "/path/to/working/directory",
+                    "compilerPath": "/path/to/compiler",
+                    "runnerPath": "/path/to/runner",
+                    "bsdbxPath": "/path/to/bsdbx",
+                    "specialJudgerPath": "/path/to/special/judger",
+                    "compilerNum": 4,
+                    "memoryLimit": 1024,
+                    "timeLimit": 1000
+                }
+            ]
+        }
+    ]
+}

@@ -15,13 +15,15 @@ class CppJudger : public Judger
     std::vector<std::unique_ptr<SimpleCppRunner>> runners;
     volatile size_t position = 0;
     std::mutex mtx;
+    size_t timeLimit;
+    size_t memoryLimit;
 
   public:
-    virtual JudgeResult judge(std::string code, std::vector<std::string> &input, std::vector<std::string> &expectedOutput,
-                              size_t timeLimit, size_t memoryLimit) override;
+    virtual JudgeResult judge(std::string code, std::vector<std::string> &input,
+                              std::vector<std::string> &expectedOutput) override;
     virtual JudgeResult judge(std::string code) override;
 
-    CppJudger(std::string workingDirectory, std::string compilerPath, std::string bsdbxPath, int runnerNum);
+    CppJudger(std::string workingDirectory, std::string compilerPath, std::string bsdbxPath, int runnerNum, size_t timelimit, size_t memorylimit);
 };
 } // namespace bjudger
 

@@ -5,8 +5,10 @@
 namespace bjudger
 {
 
-CppJudger::CppJudger(std::string workingDirectory, std::string compilerPath, std::string bsdbxPath, int runnerNum)
+CppJudger::CppJudger(std::string workingDirectory, std::string compilerPath, std::string bsdbxPath, int runnerNum, size_t timeLimit, size_t memoryLimit)
 {
+    this->timeLimit = timeLimit;
+    this->memoryLimit = memoryLimit;
     std::filesystem::path workingDirectoryRoot(workingDirectory);
     if (!std::filesystem::exists(workingDirectoryRoot))
     {
@@ -31,7 +33,7 @@ CppJudger::CppJudger(std::string workingDirectory, std::string compilerPath, std
 }
 
 JudgeResult CppJudger::judge(std::string code, std::vector<std::string> &input,
-                             std::vector<std::string> &expectedOutput, size_t timeLimit, size_t memoryLimit)
+                             std::vector<std::string> &expectedOutput)
 {
     // Make sure the input and expected output have the same size
     if (input.size() != expectedOutput.size())
@@ -76,6 +78,10 @@ JudgeResult CppJudger::judge(std::string code, std::vector<std::string> &input,
             auto end = std::find_if_not(s.rbegin(), s.rend(), [](unsigned char ch) { return std::isspace(ch); }).base();
             s.erase(end, s.end());
         }
+        while (expectedOutputSplited.size() > 0 && expectedOutputSplited.back().empty())
+        {
+            expectedOutputSplited.pop_back();
+        }
 
         // Output
         auto v2 = runResults[i].output | std::views::split('\n') |
@@ -86,11 +92,25 @@ JudgeResult CppJudger::judge(std::string code, std::vector<std::string> &input,
             auto end = std::find_if_not(s.rbegin(), s.rend(), [](unsigned char ch) { return std::isspace(ch); }).base();
             s.erase(end, s.end());
         }
+        while (outputSplited.size() > 0 && outputSplited.back().empty())
+        {
+            outputSplited.pop_back();
+        }
 
         // Fetch the last two lines of the error message
         auto errorSplited = runResults[i].error | std::views::split('\n') |
                             std::views::transform([](auto word) { return std::string(word.begin(), word.end()); });
         vector<string> errorSplitedVector(errorSplited.begin(), errorSplited.end());
+        for (auto &s : errorSplitedVector)
+        {
+            auto end = std::find_if_not(s.rbegin(), s.rend(), [](unsigned char ch) { return std::isspace(ch); }).base();
+            s.erase(end, s.end());
+        }
+        while (errorSplitedVector.size() > 0 && errorSplitedVector.back().empty())
+        {
+            errorSplitedVector.pop_back();
+        }
+
         string memoryUsage = errorSplitedVector[errorSplitedVector.size() - 2];
         string timeUsage = errorSplitedVector[errorSplitedVector.size() - 1];
 
@@ -184,11 +204,11 @@ JudgeResult CppJudger::judge(std::string code)
 extern "C"
 {
     bjudger::Judger *createJudger(char *workingDirectory, char *runnerPath, char *compilerPath, char *bsdbxPath,
-                                  int runnerNum);
+                                  int runnerNum, size_t timeLimit, size_t memoryLimit, char *specialJudgerPath);
 }
 
 bjudger::Judger *createJudger(char *workingDirectory, char *runnerPath, char *compilerPath, char *bsdbxPath,
-                              int runnerNum)
+                              int runnerNum, size_t timeLimit, size_t memoryLimit, char *specialJudgerPath)
 {
-    return new bjudger::CppJudger(workingDirectory, compilerPath, bsdbxPath, runnerNum);
+    return new bjudger::CppJudger(workingDirectory, compilerPath, bsdbxPath, runnerNum, timeLimit, memoryLimit);
 }
