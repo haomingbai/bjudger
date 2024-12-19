@@ -2,12 +2,13 @@
 #include "problem.h"
 #include <boost/json.hpp>
 #include <dlfcn.h>
-#include <map>
 #include <memory>
 #include <stdexcept>
+#include <unordered_map>
 #include <string>
+#include <iostream> // debug
 
-extern std::map<std::string, std::unique_ptr<bjudger::Problem>> problems;
+extern std::unordered_map<std::string, std::unique_ptr<bjudger::Problem>> problems;
 
 void readConfig(std::string &json_str);
 void loadProblem(boost::json::value &problem);
@@ -17,9 +18,8 @@ void readConfig(std::string &json_str)
     boost::json::value json = boost::json::parse(json_str);
 
     boost::json::object config = json.as_object();
-    size_t compilerNum = config.at("compilerNum").as_uint64();
-    size_t threadNum = config.at("thread").as_uint64();
-    size_t port = config.at("port").as_uint64();
+    size_t threadNum = config.at("thread").as_int64();
+    size_t port = config.at("port").as_int64();
     boost::json::array problemList = config.at("problems").as_array();
     for (auto &problem : problemList)
     {
@@ -39,6 +39,7 @@ void loadProblem(boost::json::value &problem)
 
     // Add the judgers
     auto judgers = problemObj.at("judgers").as_array();
+
     for (auto &judger : judgers)
     {
         // Get necessary information
@@ -47,12 +48,12 @@ void loadProblem(boost::json::value &problem)
         std::string name = judger.as_object().at("name").as_string().c_str();
         std::string judgerPath = judger.as_object().at("path").as_string().c_str();
         std::string workingDirectory = judger.as_object().at("workingDirectory").as_string().c_str();
-        size_t compilerNum = judger.as_object().at("compilerNum").as_uint64();
+        size_t compilerNum = judger.as_object().at("compilerNum").as_int64();
 
         // Time limit and memory limit are not necessary, but they are used in most cases, so in this function, they are
         // necessary. If you don't need them, just fill them with 0.
-        size_t timeLimit = judger.as_object().at("timeLimit").as_uint64();
-        size_t memoryLimit = judger.as_object().at("memoryLimit").as_uint64();
+        size_t timeLimit = judger.as_object().at("timeLimit").as_int64();
+        size_t memoryLimit = judger.as_object().at("memoryLimit").as_int64();
 
         // The path of the compiler, bsdbx, special judger and runner are not necessary, which means the it depends on
         // the realization of the judger. If they do not exist, the program will fill them with empty string.
