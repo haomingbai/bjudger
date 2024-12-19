@@ -1,0 +1,6 @@
+{
+    "id": "2b93814947ad6712c7ae890ade81ff08feb97e388e56880d05384c0791e54a4ef667f15a565c37526286e46b2e4dba40cb3958e30a66e6ed5c004545c1b4d4cf",
+    "lang": "cpp",
+    "code": "#include<iostream>\nusing namespace std;\nint main{cout << \"Hello world!\" << endl;}",
+    "token": "d00ce61b-a9e7-4f14-aabf-28821fd1e4b0"
+}
