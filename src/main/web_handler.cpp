@@ -2,9 +2,7 @@
 #include <boost/json.hpp>
 #include <memory>
 #include <string>
-#include <string_view>
 #include <unordered_map>
-#include <vector>
 #include <workflow/WFHttpServer.h>
 
 extern std::unordered_map<std::string, std::unique_ptr<bjudger::Problem>> problems;
@@ -14,7 +12,7 @@ void exist(WFHttpTask *task)
     auto *req = task->get_req();
     auto *resp = task->get_resp();
     void *body;
-    const void **bodyPtr = &body;
+    const void **bodyPtr = (const void **)&body;
     size_t size;
     req->get_parsed_body(bodyPtr, &size);
 
@@ -88,7 +86,7 @@ void judge(WFHttpTask *task)
     auto resp = task->get_resp();
     void *body;
     size_t size;
-    req->get_parsed_body(&body, &size);
+    req->get_parsed_body((const void **)&body, &size);
     std::string requestString((char *)body, size);
 
     // Parse the request
@@ -100,7 +98,7 @@ void hi(WFHttpTask *task)
     auto req = task->get_req();
     size_t size;
     void *body;
-    const void **bodyPtr = &body;
+    const void **bodyPtr = (const void **)&body;
     req->get_parsed_body(bodyPtr, &size);
     std::string requestString((char *)body, size);
     boost::json::object request = boost::json::parse(requestString).as_object();
