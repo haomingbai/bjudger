@@ -7,11 +7,34 @@
 #include <unordered_map>
 #include <string>
 #include <iostream> // debug
+#include <workflow/WFHttpServer.h>
 
 extern std::unordered_map<std::string, std::unique_ptr<bjudger::Problem>> problems;
 
 void readConfig(std::string &json_str);
 void loadProblem(boost::json::value &problem);
+
+void route(WFHttpTask *task);
+
+void initServer(int port, const std::string &cert, const std::string &key)
+{
+    auto server = WFHttpServer(route);
+    if (cert.empty() || key.empty())
+    {
+        if (server.start(port) == 0)
+        {
+            getchar();
+            // press "Enter" to end.
+            server.stop();
+        }
+    }
+    else if (server.start(port, cert.c_str(), key.c_str()) == 0)
+    {
+        getchar();
+        // press "Enter" to end.
+        server.stop();
+    }
+}
 
 void readConfig(std::string &json_str)
 {

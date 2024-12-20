@@ -29,6 +29,7 @@ int main(int argc, char **argv)
 //    std::string json_str = buffer.str();
     std::string json_str = "";
 
+    std::cout << __cplusplus << std::endl;
     json_str = R"(
 {
     "thread": 4,

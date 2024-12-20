@@ -1,6 +1,7 @@
 #include "lang/cpp/cpp_judger.h"
 #include <filesystem>
 #include <ranges>
+#include <algorithm>
 
 namespace bjudger
 {

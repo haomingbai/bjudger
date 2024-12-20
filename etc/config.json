@@ -1,6 +1,16 @@
 {
     "thread": 4,
     "port": 8080,
+    "apis": [
+        {
+            "name": "exist",
+            "path": "/path/to/exist/api.so"
+        },
+        {
+            "name": "judge",
+            "path": "/path/to/judge/api.so"
+        }
+    ],
     "problems": [
         {
             "path": "/path/to/problem/directory",
