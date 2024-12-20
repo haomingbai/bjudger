@@ -2,10 +2,10 @@
 #include <boost/json.hpp>
 #include <memory>
 #include <string>
+#include <string_view>
 #include <unordered_map>
 #include <vector>
-#include <string_view>
-#include <wfrest/HttpServer.h>
+#include <workflow/WFHttpServer.h>
 
 extern std::unordered_map<std::string, std::unique_ptr<bjudger::Problem>> problems;
 
@@ -14,9 +14,10 @@ void exist(WFHttpTask *task)
     auto *req = task->get_req();
     auto *resp = task->get_resp();
     void *body;
+    const void **bodyPtr = &body;
     size_t size;
-    req->get_parsed_body(&body, &size);
-    
+    req->get_parsed_body(bodyPtr, &size);
+
     std::string requestString((char *)body, size);
     try
     {
@@ -77,9 +78,9 @@ void exist(WFHttpTask *task)
     }
 }
 
-/*
 void judge(WFHttpTask *task)
 {
+    // Unfinished
     namespace json = boost::json;
 
     // Get the request and response objects
@@ -93,19 +94,59 @@ void judge(WFHttpTask *task)
     // Parse the request
     json::object request;
 }
-*/
 
 void hi(WFHttpTask *task)
 {
     auto req = task->get_req();
     size_t size;
     void *body;
-    req->get_parsed_body(&body, &size);
+    const void **bodyPtr = &body;
+    req->get_parsed_body(bodyPtr, &size);
     std::string requestString((char *)body, size);
+    boost::json::object request = boost::json::parse(requestString).as_object();
     auto *resp = task->get_resp();
     boost::json::object response;
     response["message"] = "Hello, World!";
-    response["request"] = requestString;
+    response["request"] = request.at("message").as_string().c_str();
     resp->append_output_body(boost::json::serialize(response).c_str());
     resp->set_status_code("200");
+}
+
+std::unordered_map<std::string, std::function<void(WFHttpTask *)>> routes = {
+    {"/exist", exist}, {"/judge", judge}, {"/", hi}, {"/hi", hi}};
+
+void route(WFHttpTask *task)
+{
+    auto req = task->get_req();
+    auto path = req->get_request_uri();
+    if (routes.find(path) != routes.end())
+    {
+        routes[path](task);
+    }
+    else
+    {
+        auto *resp = task->get_resp();
+        resp->set_status_code("404");
+        resp->append_output_body("404 Not Found");
+    }
+}
+
+void initServer(int port, const std::string &cert, const std::string &key)
+{
+    auto server = WFHttpServer(route);
+    if (cert.empty() || key.empty())
+    {
+        if (server.start(port) == 0)
+        {
+            getchar();
+            // press "Enter" to end.
+            server.stop();
+        }
+    }
+    else if (server.start(port, cert.c_str(), key.c_str()) == 0)
+    {
+        getchar();
+        // press "Enter" to end.
+        server.stop();
+    }
 }

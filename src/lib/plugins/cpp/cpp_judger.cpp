@@ -55,7 +55,7 @@ JudgeResult CppJudger::judge(std::string code, std::vector<std::string> &input,
     // the result, which will display "MLE" and "TLE" respectively.
 
     // First detect whether is CE
-    if (runResults[0].exitCode = -1)
+    if (runResults[0].exitCode == -1)
     {
         return JudgeResult{{JudgeResult::CE}, runResults[0].error};
     }

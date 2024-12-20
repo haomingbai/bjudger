@@ -4,6 +4,7 @@ project(bjudger VERSION 0.1.0 LANGUAGES C CXX)
 find_package(workflow REQUIRED)
 
 set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_FLAGS "-fpermissive -Wall")
 
 if(POLICY CMP0167)
   cmake_policy(SET CMP0167 NEW)

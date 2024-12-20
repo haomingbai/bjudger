@@ -80,7 +80,7 @@ CompilerLog SimpleCppCompiler::compile(std::string src, std::vector<std::string>
         bp::process compilerProcess(ctx, command, args, bp::process_stdio{{}, {}, err});
         code = compilerProcess.wait(ret);
     }
-    catch (std::exception e)
+    catch (const std::exception &e)
     {
         return {"", e.what()};
     }

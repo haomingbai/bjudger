@@ -5,6 +5,7 @@
 #include <stdexcept>
 
 void readConfig(std::string &json_str);
+void initServer(int port, const std::string &cert, const std::string &key);
 
 int main(int argc, char **argv)
 {
@@ -56,5 +57,5 @@ int main(int argc, char **argv)
     )";
     // Get the configuration
     readConfig(json_str);
-    
+    initServer(8888, "", "");
 }
