@@ -52,7 +52,8 @@ void api(bjudger::Context *context , WFHttpTask *task)
                 for (auto l : lang)
                 {
                     json::object langSupport{{"lang", l.as_string().c_str()}, {"support", false}};
-                    if (problem->hasLang(l.as_string().c_str()))
+                    std::string langStr = l.as_string().c_str();
+                    if (problem->hasLang(langStr))
                     {
                         langSupport["support"] = true;
                     }

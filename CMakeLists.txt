@@ -17,7 +17,7 @@ add_library(simple_cpp_judger SHARED ${PLUGIN_CPP_SRC})
 target_link_libraries(simple_cpp_judger PRIVATE Boost::process)
 
 # problem and context
-add_library(problem src/lib/problem.cpp)
+add_library(problem SHARED src/lib/problem.cpp)
 target_link_libraries(problem PUBLIC crypto)
 add_library(context src/lib/context.cpp)
 
@@ -28,12 +28,12 @@ include_directories(src/include)
 target_link_libraries(bjudger PRIVATE workflow)
 target_link_libraries(bjudger PRIVATE Boost::json Boost::program_options)
 target_link_libraries(bjudger PRIVATE problem)
-target_link_libraries(bjudger PRIVATE context)
 
 # api: exist
 aux_source_directory(src/lib/plugins/apis/exist EXIST_SRC)
 add_library(api_exist SHARED ${EXIST_SRC})
 target_link_libraries(api_exist PUBLIC workflow)
+target_link_libraries(api_exist PRIVATE problem)
 
 add_subdirectory(third_party/bsdbx ${CMAKE_BINARY_DIR}/bin)
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
