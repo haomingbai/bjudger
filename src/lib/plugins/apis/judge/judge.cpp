@@ -4,10 +4,17 @@
 #include <string>
 #include <unordered_map>
 #include <workflow/WFHttpServer.h>
+#include "context.h"
 
-void judge(WFHttpTask *task)
+extern "C"
+{
+    void api(bjudger::Context *context, WFHttpTask *task);
+}
+
+void api(bjudger::Context *context, WFHttpTask *task)
 {
     // Unfinished
+    auto &problems = context->problems;
     namespace json = boost::json;
 
     // Get the request and response objects

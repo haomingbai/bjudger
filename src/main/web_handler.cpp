@@ -4,8 +4,9 @@
 #include <string>
 #include <unordered_map>
 #include <workflow/WFHttpServer.h>
+#include "context.h"
 
-extern std::unordered_map<std::string, std::unique_ptr<bjudger::Problem>> problems;
+extern std::unordered_map<std::string, std::unique_ptr<bjudger::Problem>> &problems;
 
 void hi(WFHttpTask *task)
 {

@@ -16,9 +16,10 @@ aux_source_directory(src/lib/plugins/judgers/cpp PLUGIN_CPP_SRC)
 add_library(simple_cpp_judger SHARED ${PLUGIN_CPP_SRC})
 target_link_libraries(simple_cpp_judger PRIVATE Boost::process)
 
-# problem
+# problem and context
 add_library(problem src/lib/problem.cpp)
 target_link_libraries(problem PUBLIC crypto)
+add_library(context src/lib/context.cpp)
 
 # main: bjudger
 aux_source_directory(src/main MAIN_SRC)
@@ -27,6 +28,7 @@ include_directories(src/include)
 target_link_libraries(bjudger PRIVATE workflow)
 target_link_libraries(bjudger PRIVATE Boost::json Boost::program_options)
 target_link_libraries(bjudger PRIVATE problem)
+target_link_libraries(bjudger PRIVATE context)
 
 # api: exist
 aux_source_directory(src/lib/plugins/apis/exist EXIST_SRC)

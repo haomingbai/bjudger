@@ -1,15 +1,21 @@
+#include "context.h"
 #include "judger.h"
 #include "problem.h"
 #include <boost/json.hpp>
 #include <dlfcn.h>
+#include <functional>
+#include <iostream> // debug
 #include <memory>
 #include <stdexcept>
-#include <unordered_map>
 #include <string>
-#include <iostream> // debug
+#include <unordered_map>
 #include <workflow/WFHttpServer.h>
 
-extern std::unordered_map<std::string, std::unique_ptr<bjudger::Problem>> problems;
+extern std::unordered_map<std::string, std::unique_ptr<bjudger::Problem>> &problems;
+
+extern bjudger::Context ctx;
+
+extern std::unordered_map<std::string, std::function<void(WFHttpTask *)>> routes;
 
 void readConfig(std::string &json_str);
 void loadProblem(boost::json::value &problem);
@@ -36,6 +42,31 @@ void initServer(int port, const std::string &cert, const std::string &key)
     }
 }
 
+void addRoute(const boost::json::object &api)
+{
+    // Load the necessary information
+    std::string path = api.at("path").as_string().c_str();
+    std::string name = api.at("name").as_string().c_str();
+
+    // Get the function
+    auto handler = dlopen(path.c_str(), RTLD_LAZY);
+    if (!handler)
+    {
+        perror("Error loading handler");
+        throw std::runtime_error("Error loading handler library");
+    }
+    auto func = (std::function<void(WFHttpTask *)>(*)(bjudger::Context *, WFHttpTask *))dlsym(handler, "api");
+    if (!func)
+    {
+        perror("Error loading function");
+        throw std::runtime_error("Error loading function");
+    }
+
+    // Use std::bind to bind the function with the context
+    auto bindedFunc = std::bind(func, &ctx, std::placeholders::_1);
+    routes[name] = bindedFunc;
+}
+
 void readConfig(std::string &json_str)
 {
     boost::json::value json = boost::json::parse(json_str);
@@ -44,9 +75,33 @@ void readConfig(std::string &json_str)
     size_t threadNum = config.at("thread").as_int64();
     size_t port = config.at("port").as_int64();
     boost::json::array problemList = config.at("problems").as_array();
+
+    // Load all the problems
     for (auto &problem : problemList)
     {
         loadProblem(problem);
+    }
+
+    // Load the router
+    auto apis = config.at("apis").as_array();
+
+    // Iterate through the apis
+    for (auto &api : apis)
+    {
+        addRoute(api.as_object());
+    }
+
+    WFHttpServer server(route);
+
+    if (server.start(port) == 0)
+    {
+        getchar();
+        server.stop();
+    }
+    else
+    {
+        perror("Fail to start server");
+        return;
     }
 }
 

@@ -4,15 +4,16 @@
 #include <string>
 #include <unordered_map>
 #include <workflow/WFHttpServer.h>
+#include "context.h"
 
 extern "C"
 {
-    void api(WFHttpTask *task, std::unordered_map<std::string, std::unique_ptr<bjudger::Problem>> *problemMap);
+    void api(bjudger::Context *context, WFHttpTask *task);
 }
 
-void api(WFHttpTask *task, std::unordered_map<std::string, std::unique_ptr<bjudger::Problem>> *problemMap)
+void api(bjudger::Context *context , WFHttpTask *task)
 {
-    auto &problems = *problemMap;
+    auto &problems = context->problems;
     auto *req = task->get_req();
     auto *resp = task->get_resp();
     void *body;

@@ -2,5 +2,8 @@
 #include <memory>
 #include <string>
 #include "problem.h"
+#include "context.h"
+#include <unordered_map>
 
-std::unordered_map<std::string, std::unique_ptr<bjudger::Problem>> problems;
+bjudger::Context ctx;
+std::unordered_map<std::string, std::unique_ptr<bjudger::Problem>> &problems = ctx.problems;

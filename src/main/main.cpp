@@ -1,4 +1,5 @@
 #include "problem.h"
+#include "context.h"
 #include <boost/program_options.hpp>
 #include <fstream>
 #include <iostream> // debug
@@ -29,11 +30,16 @@ int main(int argc, char **argv)
 //    std::string json_str = buffer.str();
     std::string json_str = "";
 
-    std::cout << __cplusplus << std::endl;
     json_str = R"(
 {
     "thread": 4,
     "port": 8080,
+    "apis": [
+        {
+            "name": "exist",
+            "path": "/home/haomingbai/bjudger/build/lib/libapi_exist.so"
+        }
+    ],
     "problems": [
         {
             "path": "/home/haomingbai/problem",
@@ -58,5 +64,4 @@ int main(int argc, char **argv)
     )";
     // Get the configuration
     readConfig(json_str);
-    initServer(8888, "", "");
 }
