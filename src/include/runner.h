@@ -44,6 +44,8 @@ class Runner
      * @return RunResult The result of the code execution, including output, execution time, and memory usage.
      */
     virtual std::vector<RunResult> run(std::string code, std::vector<std::string> &input, size_t timeLimit, size_t memoryLimit) = 0;
+
+    virtual ~Runner() = default;
 };
 
 } // namespace bjudger

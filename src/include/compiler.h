@@ -56,6 +56,8 @@ class Compiler
      * @return CompilerLog The log generated during the compilation process.
      */
     virtual CompilerLog compile(std::string src, std::vector<std::string> argList, size_t timeLimitation) = 0;
+
+    virtual ~Compiler() = default;
 };
 
 struct CompilerLog

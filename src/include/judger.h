@@ -48,6 +48,8 @@ class Judger
      * @return JudgeResult The result of the judging process.
      */
     virtual JudgeResult judge(std::string code) = 0;
+
+    virtual ~Judger() = default;
 };
 
 } // namespace bjudger

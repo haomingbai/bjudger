@@ -63,6 +63,8 @@ class Problem
      * @return true if the language is supported, false otherwise.
      */
     bool hasLang(std::string lang);
+
+    virtual ~Problem() = default;
 };
 } // namespace bjudger
 
