@@ -36,7 +36,7 @@ int main(int argc, char **argv)
     "port": 8080,
     "apis": [
         {
-            "name": "exist",
+            "name": "/exist",
             "path": "/home/haomingbai/bjudger/build/lib/libapi_exist.so"
         }
     ],

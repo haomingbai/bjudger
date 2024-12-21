@@ -5,6 +5,8 @@
 #include <unordered_map>
 #include <workflow/WFHttpServer.h>
 #include "context.h"
+#include <iostream>
+#include <exception>
 
 extern "C"
 {
@@ -67,6 +69,7 @@ void api(bjudger::Context *context , WFHttpTask *task)
 
             // Add the language support array to the response object
             responseProblemObj["lang"] = langSupportArray;
+            response.push_back(responseProblemObj);
         }
         resp->add_header_pair("Content-Type", "application/json");
         auto responseString = json::serialize(response);

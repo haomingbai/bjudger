@@ -1,12 +1,15 @@
+#include "context.h"
 #include "problem.h"
 #include <boost/json.hpp>
+#include <iostream> // Debug
 #include <memory>
 #include <string>
 #include <unordered_map>
 #include <workflow/WFHttpServer.h>
-#include "context.h"
 
 extern std::unordered_map<std::string, std::unique_ptr<bjudger::Problem>> &problems;
+
+extern bjudger::Context ctx;
 
 void hi(WFHttpTask *task)
 {
@@ -15,6 +18,7 @@ void hi(WFHttpTask *task)
     void *body;
     const void **bodyPtr = (const void **)&body;
     req->get_parsed_body(bodyPtr, &size);
+    std::cout << "debug" << std::endl;
     std::string requestString((char *)body, size);
     try
     {
@@ -36,12 +40,13 @@ void hi(WFHttpTask *task)
     }
 }
 
-std::unordered_map<std::string, std::function<void(WFHttpTask *)>> routes {{"/hi", hi}};
+std::unordered_map<std::string, std::function<void(WFHttpTask *)>> routes{{"/hi", hi}};
 
 void route(WFHttpTask *task)
 {
     auto req = task->get_req();
     auto path = req->get_request_uri();
+    std::cout << path << std::endl;
     if (routes.find(path) != routes.end())
     {
         routes[path](task);

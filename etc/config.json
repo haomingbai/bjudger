@@ -1,13 +1,15 @@
 {
     "thread": 4,
     "port": 8080,
+    "cert": "/path/to/cert.crt",
+    "key": "/path/to/key.key",
     "apis": [
         {
-            "name": "exist",
+            "name": "/exist",
             "path": "/path/to/exist/api.so"
         },
         {
-            "name": "judge",
+            "name": "/judge",
             "path": "/path/to/judge/api.so"
         }
     ],

@@ -33,7 +33,7 @@ target_link_libraries(bjudger PRIVATE context)
 # api: exist
 aux_source_directory(src/lib/plugins/apis/exist EXIST_SRC)
 add_library(api_exist SHARED ${EXIST_SRC})
-target_link_libraries(api_exist PRIVATE workflow)
+target_link_libraries(api_exist PUBLIC workflow)
 
 add_subdirectory(third_party/bsdbx ${CMAKE_BINARY_DIR}/bin)
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)

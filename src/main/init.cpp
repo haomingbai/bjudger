@@ -55,7 +55,7 @@ void addRoute(const boost::json::object &api)
         perror("Error loading handler");
         throw std::runtime_error("Error loading handler library");
     }
-    auto func = (std::function<void(WFHttpTask *)>(*)(bjudger::Context *, WFHttpTask *))dlsym(handler, "api");
+    auto func = (void (*)(bjudger::Context *, WFHttpTask *))dlsym(handler, "api");
     if (!func)
     {
         perror("Error loading function");
