@@ -32,12 +32,16 @@ int main(int argc, char **argv)
 
     json_str = R"(
 {
-    "thread": 4,
+    "thread": 100,
     "port": 8080,
     "apis": [
         {
             "name": "/exist",
             "path": "/home/haomingbai/bjudger/build/lib/libapi_exist.so"
+        },
+        {
+            "name": "/judge",
+            "path": "/home/haomingbai/bjudger/build/lib/libapi_judge.so"
         }
     ],
     "problems": [
@@ -49,9 +53,9 @@ int main(int argc, char **argv)
                     "name": "cpp",
                     "path": "/home/haomingbai/bjudger/build/lib/libsimple_cpp_judger.so",
                     "workingDirectory": "/home/haomingbai/a",
-                    "compilerPath": "/bin/gcc",
+                    "compilerPath": "/bin/g++",
                     "runnerPath": "",
-                    "bsdbxPath": "/bin/bsdbx",
+                    "bsdbxPath": "/home/haomingbai/bjudger/build/bin/bsdbx",
                     "specialJudgerPath": "",
                     "compilerNum": 4,
                     "memoryLimit": 1024,

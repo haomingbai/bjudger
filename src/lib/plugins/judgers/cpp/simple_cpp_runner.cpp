@@ -2,6 +2,7 @@
 #include <boost/process/v2.hpp>
 #include <string>
 #include <vector>
+#include <iostream> // Debug
 
 namespace bjudger
 {
@@ -40,7 +41,7 @@ std::vector<RunResult> SimpleCppRunner::run(std::string code, std::vector<std::s
         args.push_back("--memory-limit=" + to_string(memoryLimit));
 
         // Create the sandbox process
-        bp::process runnerProcess(ctx, "bsdbx", args, bp::process_stdio{{in}, {out}, {err}});
+        bp::process runnerProcess(ctx, this->bsdbxPath, args, bp::process_stdio{{in}, {out}, {err}});
         in.write_some(asio::buffer(input));
         in.close();
         string output, log;
@@ -54,12 +55,17 @@ std::vector<RunResult> SimpleCppRunner::run(std::string code, std::vector<std::s
 
         string tmp(1024, '\0');
         boost::system::error_code ec;
-        while (out.read_some(asio::buffer(tmp), ec))
+        int size = 0;
+        while (size = out.read_some(asio::buffer(tmp, 1000), ec))
         {
+            // cout << "Reading output: " << tmp << endl;
+            tmp.resize(size);
             output += tmp;
         }
-        while (err.read_some(asio::buffer(tmp), ec))
+        while (size = err.read_some(asio::buffer(tmp, 1000), ec))
         {
+            // cout << "Reading error: " << tmp << endl;
+            tmp.resize(size);
             log += tmp;
         }
 
@@ -80,6 +86,7 @@ std::vector<RunResult> SimpleCppRunner::run(std::string code, std::vector<std::s
 SimpleCppRunner::SimpleCppRunner(std::string outputDirectory, std::string compilerPath, std::string bsdbxPath)
 {
     compiler = std::make_unique<SimpleCppCompiler>(outputDirectory, compilerPath, bsdbxPath);
+    this->bsdbxPath = bsdbxPath;
 }
 
 RunResult SimpleCppRunner::run(std::string code)

@@ -35,6 +35,12 @@ add_library(api_exist SHARED ${EXIST_SRC})
 target_link_libraries(api_exist PUBLIC workflow)
 target_link_libraries(api_exist PRIVATE problem)
 
+# api: judge
+aux_source_directory(src/lib/plugins/apis/judge JUDGE_SRC)
+add_library(api_judge SHARED ${JUDGE_SRC})
+target_link_libraries(api_judge PUBLIC workflow)
+target_link_libraries(api_judge PRIVATE problem)
+
 add_subdirectory(third_party/bsdbx ${CMAKE_BINARY_DIR}/bin)
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
 set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)

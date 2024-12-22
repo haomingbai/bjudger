@@ -11,6 +11,7 @@ class SimpleCppRunner : public Runner
 {
   private:
     std::unique_ptr<SimpleCppCompiler> compiler;
+    std::string bsdbxPath;
 
   public:
     /**

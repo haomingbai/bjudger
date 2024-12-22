@@ -92,6 +92,7 @@ void readConfig(std::string &json_str)
     }
 
     WFHttpServer server(route);
+    WFGlobal::get_scheduler()->init(threadNum, threadNum);
 
     if (server.start(port) == 0)
     {

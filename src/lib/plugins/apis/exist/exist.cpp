@@ -76,11 +76,17 @@ void api(bjudger::Context *context , WFHttpTask *task)
         auto responseString = json::serialize(response);
         resp->append_output_body(responseString.c_str(), responseString.size());
         resp->set_status_code("200");
+        resp->set_header_pair("Connection", "close");
     }
     catch (const std::exception &e)
     {
-        resp->append_output_body("Error: " + std::string(e.what()));
-        resp->set_status_code("500");
+        boost::json::object response = {
+            {"message", e.what()}
+        };
+        std::string responseString = boost::json::serialize(response);
+        resp->append_output_body(responseString.c_str(), responseString.length());
+        resp->set_status_code("400");
+        resp->set_header_pair("Connection", "close");
         return;
     }
 }

@@ -1,12 +1,14 @@
 #include "lang/cpp/cpp_judger.h"
-#include <filesystem>
-#include <ranges>
 #include <algorithm>
+#include <filesystem>
+#include <iostream> // Debug
+#include <ranges>
 
 namespace bjudger
 {
 
-CppJudger::CppJudger(std::string workingDirectory, std::string compilerPath, std::string bsdbxPath, int runnerNum, size_t timeLimit, size_t memoryLimit)
+CppJudger::CppJudger(std::string workingDirectory, std::string compilerPath, std::string bsdbxPath, int runnerNum,
+                     size_t timeLimit, size_t memoryLimit)
 {
     this->timeLimit = timeLimit;
     this->memoryLimit = memoryLimit;
@@ -58,7 +60,7 @@ JudgeResult CppJudger::judge(std::string code, std::vector<std::string> &input,
     // First detect whether is CE
     if (runResults[0].exitCode == -1)
     {
-        return JudgeResult{{JudgeResult::CE}, runResults[0].error};
+        return JudgeResult{{JudgeResult::CE}, runResults[0].error, {0}, {0}};
     }
 
     JudgeResult result; // The result to be returned
@@ -76,10 +78,10 @@ JudgeResult CppJudger::judge(std::string code, std::vector<std::string> &input,
         vector<string> expectedOutputSplited(v.begin(), v.end());
         for (auto &s : expectedOutputSplited)
         {
-            auto end = std::find_if_not(s.rbegin(), s.rend(), [](unsigned char ch) { return std::isspace(ch); }).base();
-            s.erase(end, s.end());
+            s.erase(std::find_if(s.rbegin(), s.rend(), [](unsigned char ch) { return !std::isspace(ch); }).base(),
+                    s.end());
         }
-        while (expectedOutputSplited.size() > 0 && expectedOutputSplited.back().empty())
+        while (expectedOutputSplited.size() > 0 && (expectedOutputSplited.back().length() == 0))
         {
             expectedOutputSplited.pop_back();
         }
@@ -90,10 +92,10 @@ JudgeResult CppJudger::judge(std::string code, std::vector<std::string> &input,
         vector<string> outputSplited(v2.begin(), v2.end());
         for (auto &s : outputSplited)
         {
-            auto end = std::find_if_not(s.rbegin(), s.rend(), [](unsigned char ch) { return std::isspace(ch); }).base();
-            s.erase(end, s.end());
+            s.erase(std::find_if(s.rbegin(), s.rend(), [](unsigned char ch) { return !std::isspace(ch); }).base(),
+                    s.end());
         }
-        while (outputSplited.size() > 0 && outputSplited.back().empty())
+        while (outputSplited.size() > 0 && (outputSplited.back().length() == 0))
         {
             outputSplited.pop_back();
         }
@@ -104,10 +106,10 @@ JudgeResult CppJudger::judge(std::string code, std::vector<std::string> &input,
         vector<string> errorSplitedVector(errorSplited.begin(), errorSplited.end());
         for (auto &s : errorSplitedVector)
         {
-            auto end = std::find_if_not(s.rbegin(), s.rend(), [](unsigned char ch) { return std::isspace(ch); }).base();
-            s.erase(end, s.end());
+            s.erase(std::find_if(s.rbegin(), s.rend(), [](unsigned char ch) { return !std::isspace(ch); }).base(),
+                    s.end());
         }
-        while (errorSplitedVector.size() > 0 && errorSplitedVector.back().empty())
+        while (errorSplitedVector.size() > 0 && (errorSplitedVector.back().length() == 0))
         {
             errorSplitedVector.pop_back();
         }

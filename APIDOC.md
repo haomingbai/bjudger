@@ -64,7 +64,7 @@ Request: The request should be an object, which should contain 3 vars. The first
     "token": "d00ce61b-a9e7-4f14-aabf-28821fd1e4b0"
 }
 ```
-Response: The response is a json object containing two vars. "id" means the id of the problem and the "result" is an array. In this array, each element is a number, which means the judging status of each case. the meanning of these cases are as thus
+Response: The response is a json object containing two vars. "id" means the id of the problem and the "result" is an array. In this array, each element is an object, in which, the "timeUsage" means the time consumed, "memoryUsage" means the memory used and status means the result of the case. the meanning of these cases are as thus
 + -1: The judger fails.
 + 0: AC
 + 1: WA
@@ -77,11 +77,16 @@ Response: The response is a json object containing two vars. "id" means the id o
 {
     "id": "2b93814947ad6712c7ae890ade81ff08feb97e388e56880d05384c0791e54a4ef667f15a565c37526286e46b2e4dba40cb3958e30a66e6ed5c004545c1b4d4cf",
     "result": [
-        0,
-        0,
-        3,
-        5,
-        -1
+        {
+            "timeUsage": 990,
+            "memoryUsage": 1000,
+            "status": 0
+        },
+        {
+            "timeUsage": 1000,
+            "memoryUsage": 1000,
+            "status": 2
+        }
     ]
 }
 ```
