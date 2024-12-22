@@ -68,13 +68,15 @@ CompilerLog SimpleCppCompiler::compile(std::string src, std::vector<std::string>
     boost::asio::readable_pipe err{ctx};
     boost::system::error_code ret;
     int code;
+#ifdef DEBUG
     cout << "Command: " << command << endl;
     for (auto &&i : args)
     {
         cout << i << ' ';
     }
     cout << endl;
-    
+#endif
+
     try
     {
         bp::process compilerProcess(ctx, command, args, bp::process_stdio{{}, {}, err});

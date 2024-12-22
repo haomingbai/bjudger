@@ -49,7 +49,9 @@ void route(WFHttpTask *task)
 {
     auto req = task->get_req();
     auto path = req->get_request_uri();
+#ifdef DEBUG
     std::cout << path << std::endl;
+#endif
     if (routes.find(path) != routes.end())
     {
         WFGoTask *goTask = WFTaskFactory::create_go_task("route", routes[path], task);

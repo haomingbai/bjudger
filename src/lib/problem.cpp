@@ -4,13 +4,13 @@
 #include <filesystem>
 #include <fstream>
 #include <iomanip>
+#include <iostream> // Debug
 #include <memory>
 #include <openssl/evp.h>
 #include <openssl/sha.h>
 #include <sstream>
 #include <stdexcept>
 #include <vector>
-#include <iostream> // Debug
 
 namespace bjudger
 {
@@ -231,7 +231,9 @@ Problem::Problem(std::string path, bool isSpecialJudge)
 
     // Calculate the basic problem id
     this->id = __internal_func__::calculateBasicProblemId(path);
-    std::cout << this->id << std::endl;
+#ifdef DEBUG
+    std::clog << this->id << std::endl;
+#endif
 
     // Read the name of all input and output files without the extension
     std::vector<std::string> inputNames;

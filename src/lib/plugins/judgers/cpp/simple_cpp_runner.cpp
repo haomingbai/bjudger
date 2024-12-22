@@ -58,13 +58,11 @@ std::vector<RunResult> SimpleCppRunner::run(std::string code, std::vector<std::s
         int size = 0;
         while (size = out.read_some(asio::buffer(tmp, 1000), ec))
         {
-            // cout << "Reading output: " << tmp << endl;
             tmp.resize(size);
             output += tmp;
         }
         while (size = err.read_some(asio::buffer(tmp, 1000), ec))
         {
-            // cout << "Reading error: " << tmp << endl;
             tmp.resize(size);
             log += tmp;
         }

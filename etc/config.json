@@ -1,32 +1,30 @@
 {
     "thread": 4,
     "port": 8080,
-    "cert": "/path/to/cert.crt",
-    "key": "/path/to/key.key",
     "apis": [
         {
             "name": "/exist",
-            "path": "/path/to/exist/api.so"
+            "path": "/usr/local/lib/libbjudger_api_exist.so"
         },
         {
             "name": "/judge",
-            "path": "/path/to/judge/api.so"
+            "path": "/usr/local/lib/libbjudger_api_judge.so"
         }
     ],
     "problems": [
         {
-            "path": "/path/to/problem/directory",
+            "path": "/usr/local/share/bjudger/example/problemA",
             "specialJudge": false,
             "judgers": [
                 {
                     "name": "cpp",
-                    "path": "/path/to/judger.so",
-                    "workingDirectory": "/path/to/working/directory",
-                    "compilerPath": "/path/to/compiler",
-                    "runnerPath": "/path/to/runner",
-                    "bsdbxPath": "/path/to/bsdbx",
-                    "specialJudgerPath": "/path/to/special/judger",
-                    "compilerNum": 4,
+                    "path": "/usr/local/lib/libbjudger_simple_cpp_judger.so",
+                    "workingDirectory": "/tmp/bjudger/problemA/cpp",
+                    "compilerPath": "/bin/g++",
+                    "runnerPath": "",
+                    "bsdbxPath": "/usr/local/bin/bsdbx",
+                    "specialJudgerPath": "",
+                    "compilerNum": 8,
                     "memoryLimit": 1024,
                     "timeLimit": 1000
                 }
