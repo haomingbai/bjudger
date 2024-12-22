@@ -3,14 +3,24 @@ project(bjudger VERSION 0.1.0 LANGUAGES C CXX)
 
 find_package(workflow REQUIRED)
 
+link_directories(/usr/local/lib)
+
 set(CMAKE_CXX_STANDARD 23)
-if (${CMAKE_BUILD_TYPE} STREQUAL "Debug")
+if (NOT DEFINED CMAKE_BUILD_TYPE)
+	set(CMAKE_BUILD_TYPE "Release")
+endif()
+
+if ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
   add_definitions(-DDEBUG=1)
   set(CMAKE_CXX_FLAGS "-Wall")
-elseif(${CMAKE_BUILD_TYPE} STREQUAL "Release")
+else()
   add_definitions(-UDEBUG=1)
   set(CMAKE_CXX_FLAGS "-O3 -Wall")
 endif()
+
+# Set rpath
+set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+set(CMAKE_INSTALL_RPATH /usr/local/lib)
 
 if(POLICY CMP0167)
   cmake_policy(SET CMP0167 NEW)
