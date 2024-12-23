@@ -155,47 +155,57 @@ std::string calculateBasicProblemId(std::string &path)
         throw std::invalid_argument("The path is not a directory");
     }
 
-    // Get the list of input and output files
-    std::vector<fs::path> inputFiles;
-    std::vector<fs::path> outputFiles;
-    for (const auto &entry : std::filesystem::directory_iterator(problemDirectory))
+    // Add special judge support
+    if (fs::exists(problemDirectory / "judge.cpp"))
     {
-        if (entry.is_regular_file() && entry.path().extension() == ".in")
+        std::string originalId = calculateFileSHA512(problemDirectory / "content.md");
+        originalId += calculateFileSHA512(problemDirectory / "judge.cpp");
+        return calculateStringSHA512(originalId);
+    }
+    else
+    {
+        // Get the list of input and output files
+        std::vector<fs::path> inputFiles;
+        std::vector<fs::path> outputFiles;
+        for (const auto &entry : std::filesystem::directory_iterator(problemDirectory))
         {
-            inputFiles.emplace_back(entry.path());
+            if (entry.is_regular_file() && entry.path().extension() == ".in")
+            {
+                inputFiles.emplace_back(entry.path());
+            }
+            if (entry.is_regular_file() && entry.path().extension() == ".out")
+            {
+                outputFiles.emplace_back(entry.path());
+            }
         }
-        if (entry.is_regular_file() && entry.path().extension() == ".out")
+        std::sort(inputFiles.begin(), inputFiles.end(),
+                  [](const fs::path &a, const fs::path &b) { return a.filename().string() < b.filename().string(); });
+        std::sort(outputFiles.begin(), outputFiles.end(),
+                  [](const fs::path &a, const fs::path &b) { return a.filename().string() < b.filename().string(); });
+
+        std::string originalId = "";
+
+        // Calculate the SHA of the context of the "content.md"
+        std::string contentPath = problemDirectory / "content.md";
+        if (fs::exists(contentPath))
         {
-            outputFiles.emplace_back(entry.path());
+            originalId += calculateFileSHA512(contentPath);
         }
+
+        // Calculate the SHA of *.in files
+        for (const auto &inputFile : inputFiles)
+        {
+            originalId += calculateFileSHA512(problemDirectory / inputFile);
+        }
+
+        // Calculate the SHA of *.out files
+        for (const auto &outputFile : outputFiles)
+        {
+            originalId += calculateFileSHA512(problemDirectory / outputFile);
+        }
+
+        return calculateStringSHA512(originalId);
     }
-    std::sort(inputFiles.begin(), inputFiles.end(),
-              [](const fs::path &a, const fs::path &b) { return a.filename().string() < b.filename().string(); });
-    std::sort(outputFiles.begin(), outputFiles.end(),
-              [](const fs::path &a, const fs::path &b) { return a.filename().string() < b.filename().string(); });
-
-    std::string originalId = "";
-
-    // Calculate the SHA of the context of the "content.md"
-    std::string contentPath = problemDirectory / "content.md";
-    if (fs::exists(contentPath))
-    {
-        originalId += calculateFileSHA512(contentPath);
-    }
-
-    // Calculate the SHA of *.in files
-    for (const auto &inputFile : inputFiles)
-    {
-        originalId += calculateFileSHA512(problemDirectory / inputFile);
-    }
-
-    // Calculate the SHA of *.out files
-    for (const auto &outputFile : outputFiles)
-    {
-        originalId += calculateFileSHA512(problemDirectory / outputFile);
-    }
-
-    return calculateStringSHA512(originalId);
 }
 } // namespace __internal_func__
 Problem::Problem(std::string path, bool isSpecialJudge)
@@ -234,46 +244,53 @@ Problem::Problem(std::string path, bool isSpecialJudge)
 #ifdef DEBUG
     std::clog << this->id << std::endl;
 #endif
-
-    // Read the name of all input and output files without the extension
-    std::vector<std::string> inputNames;
-    for (const auto &entry : fs::directory_iterator(problemDirectory))
+    if (!isSpecialJudge)
     {
-        if (entry.is_regular_file() && entry.path().extension() == ".in")
+        // Read the name of all input and output files without the extension
+        std::vector<std::string> inputNames;
+        for (const auto &entry : fs::directory_iterator(problemDirectory))
         {
-            inputNames.push_back(entry.path().filename().stem().string());
+            if (entry.is_regular_file() && entry.path().extension() == ".in")
+            {
+                inputNames.push_back(entry.path().filename().stem().string());
+            }
+        }
+
+        // Sort the input names
+        std::sort(inputNames.begin(), inputNames.end());
+
+        // Read the content of the input and output files
+        for (const auto &inputName : inputNames)
+        {
+            std::string inputPath = (problemDirectory / (inputName + ".in")).string();
+            std::string outputPath = (problemDirectory / (inputName + ".out")).string();
+
+            // Read the input file
+            std::ifstream inputFile(inputPath);
+            if (!inputFile.is_open())
+            {
+                throw std::runtime_error("Unable to open input file");
+            }
+            std::stringstream inputBuffer;
+            inputBuffer << inputFile.rdbuf();
+            this->inputs.push_back(inputBuffer.str());
+
+            // Read the output file
+            std::ifstream outputFile(outputPath);
+            if (!outputFile.is_open())
+            {
+                throw std::runtime_error("Unable to open output file");
+            }
+            std::stringstream outputBuffer;
+            outputBuffer << outputFile.rdbuf();
+            this->outputs.push_back(outputBuffer.str());
         }
     }
-
-    // Sort the input names
-    std::sort(inputNames.begin(), inputNames.end());
-
-    // Read the content of the input and output files
-    for (const auto &inputName : inputNames)
+    else
     {
-        std::string inputPath = (problemDirectory / (inputName + ".in")).string();
-        std::string outputPath = (problemDirectory / (inputName + ".out")).string();
-
-        // Read the input file
-        std::ifstream inputFile(inputPath);
-        if (!inputFile.is_open())
-        {
-            throw std::runtime_error("Unable to open input file");
-        }
-        std::stringstream inputBuffer;
-        inputBuffer << inputFile.rdbuf();
-        this->inputs.push_back(inputBuffer.str());
-
-        // Read the output file
-        std::ifstream outputFile(outputPath);
-        if (!outputFile.is_open())
-        {
-            throw std::runtime_error("Unable to open output file");
-        }
-        std::stringstream outputBuffer;
-        outputBuffer << outputFile.rdbuf();
-        this->outputs.push_back(outputBuffer.str());
+        // Compile the special judge
     }
+    
 }
 
 void Problem::addJudger(std::string lang, std::unique_ptr<Judger> judger)
@@ -287,7 +304,14 @@ FinalResult Problem::judge(std::string code, std::string lang)
     {
         FinalResult result;
         result.isSuccessful = true;
-        result.result = std::move(this->judgers[lang]->judge(code, this->inputs, this->outputs));
+        if (this->isSpecialJudge)
+        {
+            result.result = std::move(this->judgers[lang]->judge(code));
+        }
+        else
+        {
+            result.result = std::move(this->judgers[lang]->judge(code, this->inputs, this->outputs));
+        }
         return result;
     }
     else

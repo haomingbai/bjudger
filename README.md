@@ -98,7 +98,7 @@ Let's first have a look at the configuration file:
 }
 ```
 
-As we can see, the first item of this file is "thread", which means the number of threads to be used by the server, while the second line, port, indicates that the judger will listen the 8080 port.
+As we can see, the first item of this file is "thread", which means the number of threads to be used by the server, while the second line, port, indicates that the judger will listen the 8080 port. Besides, by filling the "cert" and "key", you may have a https server.
 
 The "apis" item is a list indicating the paths of the api functions. For each of the api, there should be two variables, namely "name" which shows the route path of the api and "path" indicating the path of the api function. The api function will be mentioned later.
 
