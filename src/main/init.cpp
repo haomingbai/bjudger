@@ -33,12 +33,21 @@ void initServer(int port, const std::string &cert, const std::string &key)
             // press "Enter" to end.
             server.stop();
         }
+        else
+        {
+            perror("Error starting server");
+        }
+        
     }
     else if (server.start(port, cert.c_str(), key.c_str()) == 0)
     {
         getchar();
         // press "Enter" to end.
         server.stop();
+    }
+    else
+    {
+        perror("Error starting server");
     }
 }
 
@@ -74,6 +83,19 @@ void readConfig(std::string &json_str)
     boost::json::object config = json.as_object();
     size_t threadNum = config.at("thread").as_int64();
     size_t port = config.at("port").as_int64();
+
+    std::string cert = "";
+    if (config.contains("cert") && config.at("cert").is_string())
+    {
+        cert = config.at("cert").as_string().c_str();
+    }
+
+    std::string key = "";
+    if (config.contains("key") && config.at("key").is_string())
+    {
+        key = config.at("key").as_string().c_str();
+    }
+
     boost::json::array problemList = config.at("problems").as_array();
 
     // Load all the problems
@@ -94,17 +116,7 @@ void readConfig(std::string &json_str)
     WFHttpServer server(route);
     WFGlobal::get_scheduler()->init(threadNum, threadNum);
 
-    if (server.start(port) == 0)
-    {
-        getchar();
-        server.stop();
-        return;
-    }
-    else
-    {
-        perror("Fail to start server");
-        return;
-    }
+    initServer(port, cert, key);
 }
 
 void loadProblem(boost::json::value &problem)

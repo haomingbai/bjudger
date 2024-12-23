@@ -62,6 +62,10 @@ add_subdirectory(third_party/bsdbx ${CMAKE_BINARY_DIR}/bin)
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
 set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
 
+# tool: calculate id of a problem
+add_executable(calculate_problem_id src/tools/calculate_problem_id.cpp)
+target_link_libraries(calculate_problem_id PRIVATE crypto)
+
 # Add install target, install the binary to /usr/local/bin and libraries to /usr/local/lib
 install(TARGETS bjudger bjudger_problem context bjudger_simple_cpp_judger bjudger_api_exist bjudger_api_judge bsdbx
   RUNTIME DESTINATION bin
