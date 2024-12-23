@@ -11,6 +11,8 @@
 #include <sstream>
 #include <stdexcept>
 #include <vector>
+#include "lang/cpp/simple_cpp_compiler.h"
+#include <boost/process/v2.hpp>
 
 namespace bjudger
 {
@@ -288,7 +290,34 @@ Problem::Problem(std::string path, bool isSpecialJudge)
     }
     else
     {
-        // Compile the special judge
+        // Compile the special judger
+        std::string specialJudgerCodePath = problemDirectory / "judge.cpp";
+        if (!fs::exists(specialJudgerCodePath))
+        {
+            throw std::invalid_argument("The special judger does not exist");
+        }
+
+        // Create a process to compile the special judger
+        boost::asio::io_context ioContext;
+        boost::asio::readable_pipe compileStdout(ioContext);
+        boost::asio::readable_pipe compileStderr(ioContext);
+        int code;
+        
+        std::string specialJudgerTmpDir = "/tmp/bjudger/" + id;
+        if (!fs::exists(specialJudgerTmpDir))
+        {
+            fs::create_directories(specialJudgerTmpDir);
+        }
+
+        boost::process::process compileProcess(ioContext, "/usr/bin/g++", {specialJudgerCodePath, "-o", specialJudgerTmpDir + "/judge", "-std=c++20"}, boost::process::process_stdio{nullptr, compileStdout, compileStderr});
+        code = compileProcess.wait();
+
+        if (code)
+        {
+            throw std::runtime_error("Fail to compile the special judger code");
+        }
+
+        this->specialJudgerPath = specialJudgerTmpDir + "/judge";
     }
     
 }
@@ -330,6 +359,11 @@ std::string Problem::getId()
 bool Problem::hasLang(std::string lang)
 {
     return this->judgers.count(lang) > 0;
+}
+
+std::string Problem::getSpecialJudgerPath()
+{
+    return this->specialJudgerPath;
 }
 
 } // namespace bjudger

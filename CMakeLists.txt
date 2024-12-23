@@ -35,6 +35,7 @@ target_link_libraries(bjudger_simple_cpp_judger PRIVATE Boost::process)
 # problem and context
 add_library(bjudger_problem SHARED src/lib/problem.cpp)
 target_link_libraries(bjudger_problem PUBLIC crypto)
+target_link_libraries(bjudger_problem PUBLIC Boost::process)
 add_library(context src/lib/context.cpp)
 
 # main: bjudger

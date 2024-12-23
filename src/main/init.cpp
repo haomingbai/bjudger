@@ -37,7 +37,6 @@ void initServer(int port, const std::string &cert, const std::string &key)
         {
             perror("Error starting server");
         }
-        
     }
     else if (server.start(port, cert.c_str(), key.c_str()) == 0)
     {
@@ -142,13 +141,13 @@ void loadProblem(boost::json::value &problem)
         std::string workingDirectory = judger.as_object().at("workingDirectory").as_string().c_str();
         size_t compilerNum = judger.as_object().at("compilerNum").as_int64();
 
-        // Time limit and memory limit are not necessary, but they are used in most cases, so in this function, they are
-        // necessary. If you don't need them, just fill them with 0.
+        // Time limit and memory limit are not necessary, but they are used in most cases, so in this function, they
+        // are necessary. If you don't need them, just fill them with 0.
         size_t timeLimit = judger.as_object().at("timeLimit").as_int64();
         size_t memoryLimit = judger.as_object().at("memoryLimit").as_int64();
 
-        // The path of the compiler, bsdbx, special judger and runner are not necessary, which means the it depends on
-        // the realization of the judger. If they do not exist, the program will fill them with empty string.
+        // The path of the compiler, bsdbx, special judger and runner are not necessary, which means the it depends
+        // on the realization of the judger. If they do not exist, the program will fill them with empty string.
 
         // The path of compiler.
         std::string compilerPath = "";
@@ -166,11 +165,11 @@ void loadProblem(boost::json::value &problem)
 
         // The path of special judger.
         std::string specialJudgerPath = "";
-        if (judger.as_object().contains("specialJudgerPath") && judger.as_object().at("specialJudgerPath").is_string())
+        if (isSpecial)
         {
-            specialJudgerPath = judger.as_object().at("specialJudgerPath").as_string().c_str();
+            specialJudgerPath = problemPtr->getSpecialJudgerPath();
         }
-
+        
         // The path of runner.
         std::string runnerPath = "";
         if (judger.as_object().contains("runnerPath") && judger.as_object().at("runnerPath").is_string())

@@ -207,11 +207,11 @@ JudgeResult CppJudger::judge(std::string code)
 extern "C"
 {
     bjudger::Judger *createJudger(char *workingDirectory, char *runnerPath, char *compilerPath, char *bsdbxPath,
-                                  int runnerNum, size_t timeLimit, size_t memoryLimit);
+                                  int runnerNum, size_t timeLimit, size_t memoryLimit, char *specialJudgerPath);
 }
 
 bjudger::Judger *createJudger(char *workingDirectory, char *runnerPath, char *compilerPath, char *bsdbxPath,
-                              int runnerNum, size_t timeLimit, size_t memoryLimit)
+                              int runnerNum, size_t timeLimit, size_t memoryLimit, char *specialJudgerPath)
 {
     return new bjudger::CppJudger(workingDirectory, compilerPath, bsdbxPath, runnerNum, timeLimit, memoryLimit);
 }

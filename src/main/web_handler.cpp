@@ -57,7 +57,6 @@ void route(WFHttpTask *task)
         WFGoTask *goTask = WFTaskFactory::create_go_task("route", routes[path], task);
 
         goTask->set_callback([task](WFGoTask *go_task) {
-            SeriesWork *series = series_of(task);
             auto resp = task->get_resp();
 
             if (go_task->get_state() != WFT_STATE_SUCCESS)

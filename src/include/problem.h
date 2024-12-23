@@ -22,6 +22,7 @@ class Problem
     std::string id;
     std::vector<std::string> inputs;
     std::vector<std::string> outputs;
+    std::string specialJudgerPath;
 
   public:
     /**
@@ -63,6 +64,8 @@ class Problem
      * @return true if the language is supported, false otherwise.
      */
     bool hasLang(std::string lang);
+
+    std::string getSpecialJudgerPath();
 
     virtual ~Problem() = default;
 };
