@@ -70,7 +70,10 @@ install(TARGETS bjudger bjudger_problem context bjudger_simple_cpp_judger bjudge
 )
 
 # Install etc/config.json to /etc/bjudger/config.json
-install(FILES etc/config.json DESTINATION etc/bjudger)
+install(FILES etc/config.json DESTINATION /etc/bjudger)
 
 # Install example to /usr/share/bjudger/example
 install(DIRECTORY example DESTINATION share/bjudger)
+
+# Install include to /usr/include/bjudger
+install(DIRECTORY src/include/ DESTINATION include/bjudger)

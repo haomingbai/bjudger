@@ -98,6 +98,7 @@ void readConfig(std::string &json_str)
     {
         getchar();
         server.stop();
+        return;
     }
     else
     {

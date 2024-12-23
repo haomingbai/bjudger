@@ -14,7 +14,7 @@ int main(int argc, char **argv)
     namespace po = boost::program_options;
     po::options_description desc("Allowed options");
     desc.add_options()("help", "produce help message")(
-        "config", po::value<std::string>()->default_value("/usr/local/etc/bjudger/config.json"),
+        "config", po::value<std::string>()->default_value("/etc/bjudger/config.json"),
         "set the path of the configuration file");
 
     po::variables_map vm;
