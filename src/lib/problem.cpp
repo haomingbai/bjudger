@@ -366,4 +366,9 @@ std::string Problem::getSpecialJudgerPath()
     return this->specialJudgerPath;
 }
 
+std::string bjudger::Problem::getProblemName()
+{
+    return this->problemName;
+}
+
 } // namespace bjudger

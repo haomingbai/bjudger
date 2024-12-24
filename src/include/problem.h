@@ -23,6 +23,7 @@ class Problem
     std::vector<std::string> inputs;
     std::vector<std::string> outputs;
     std::string specialJudgerPath;
+    std::string problemName;
 
   public:
     /**
@@ -65,7 +66,17 @@ class Problem
      */
     bool hasLang(std::string lang);
 
+    /**
+     * @brief Retrieves the path to the special judger.
+     *
+     * This function returns the file path where the special judger is located.
+     * The special judger is used for custom judging logic in the problem.
+     *
+     * @return std::string The path to the special judger.
+     */
     std::string getSpecialJudgerPath();
+
+    std::string getProblemName();
 
     virtual ~Problem() = default;
 };

@@ -178,3 +178,7 @@ When calculating the ID of the problem, the program will first create a string n
 + c.out
 
 Then, the SHA512 hash of the original string will be calculated and the id of the problem will be the hash of the original string.
+
+## Notes
+
+The maintainer of this project has got illed and the project is currently unfinished. If you have any questions, please contact me at [haomingbai@hotmail.com](mailto:haomingbai@hotmail.com).

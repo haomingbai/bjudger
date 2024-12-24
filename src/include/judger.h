@@ -4,6 +4,13 @@
 #include <string>
 #include <vector>
 
+struct SimpleJudgeResult
+{
+    size_t timeUsage;
+    size_t memoryUsage;
+    int status;
+};
+
 namespace bjudger
 {
 struct JudgeResult
@@ -56,7 +63,8 @@ class Judger
 
 extern "C"
 {
-    bjudger::Judger *createJudger(char *workingDirectory, char *runnerPath, char *compilerPath, char *bsdbxPath, int runnerNum, size_t timeLimit, size_t memoryLimit, char *specialJudgerPath);
+    bjudger::Judger *createJudger(char *workingDirectory, char *runnerPath, char *compilerPath, char *bsdbxPath,
+                                  int runnerNum, size_t timeLimit, size_t memoryLimit, char *specialJudgerPath);
 }
 
 #endif // JUDGER_H

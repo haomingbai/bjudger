@@ -32,6 +32,11 @@ aux_source_directory(src/lib/plugins/judgers/cpp PLUGIN_CPP_SRC)
 add_library(bjudger_simple_cpp_judger SHARED ${PLUGIN_CPP_SRC})
 target_link_libraries(bjudger_simple_cpp_judger PRIVATE Boost::process)
 
+# special cpp judger
+aux_source_directory(src/lib/plugins/judgers/special_cpp PLUGIN_CPP_SPECIAL_SRC)
+add_library(bjudger_special_cpp_judger SHARED ${PLUGIN_CPP_SPECIAL_SRC})
+target_link_libraries(bjudger_simple_cpp_judger PRIVATE Boost::process)
+
 # problem and context
 add_library(bjudger_problem SHARED src/lib/problem.cpp)
 target_link_libraries(bjudger_problem PUBLIC crypto)

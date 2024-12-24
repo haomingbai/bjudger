@@ -2,8 +2,10 @@
 
 ## exist
 
-**Judge wiether a problem exist and whether a problem can be judged with the given languages.**\
-Method: POST \
+**Judge wiether a problem exist and whether a problem can be judged with the given languages.**
+
+Method: POST
+
 Request: The data sent is an array, in which, for each object, the "id" means the id of a problem and the var "lang" shold be also an array, giving the names of the language expected to be supported.
 
 ```json5
@@ -60,8 +62,10 @@ Response: the response is also an array. In this array, for each json object, th
 
 ## judge
 
-**The synhorized version of the judging function.**\
-Method: POST\
+**The synhorized version of the judging function.**
+
+Method: POST
+
 Request: The request should be an object, which should contain 3 vars. The first one names "id, indicating the id of the problem, while the "lang" means the language of the code given. Then, the "code" field means the whole code of the language to be judged. "token" is useless currently. However, it will work maybe in the further version of this software.
 
 ```json5
